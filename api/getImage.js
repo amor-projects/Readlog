@@ -4,7 +4,7 @@ import path from 'path';
 const IMAGE_API = 'https://covers.openlibrary.org';
 
 async function getImage(type = 'b', value) {
-  const fileName = (type === 'author' || type === 'a') ? `${value}.jpg` : `${value}-M.jpg`;
+  const fileName = `${value}-M.jpg`;
   const subDir = (type ==='author' ||type === 'a') ? 'a' : 'b';
   const publicDir = path.join(import.meta.dirname, '..', 'public');
   const destination = path.join(publicDir, fileName);
