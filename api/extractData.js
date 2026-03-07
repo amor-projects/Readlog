@@ -1,5 +1,4 @@
-import { sanitzeOutput } from './sanitizer.js';
-import {generateRemoteLinks} from './utils.js'
+import {generateRemoteLinks, sanitzeOutput} from './utils.js'
 function extractDescription(desc) {
   if (!desc) return "";
   if (typeof desc === 'string') return desc;

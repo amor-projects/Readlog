@@ -1,4 +1,4 @@
-import { sanitzeInput } from './sanitizer.js';
+import { sanitzeInput } from './utils.js';
 
 async function fetchFromOpenLib (endpoint, query, res, extractFn = null) {
   query = sanitzeInput(query);
