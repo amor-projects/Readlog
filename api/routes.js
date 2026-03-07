@@ -1,9 +1,8 @@
 import express from 'express';
 import path from 'path';
 import getImage from './getImage.js';
-import { fetchFromOpenLib } from './fetchFromOpenLib.js';
+import { fetchFromAPI } from './fetchFromAPI.js';
 import { extractWork, extractAuthor, extractEdition, extractSearchResults } from './extractData.js';
-
 
 const OPEN_LIBRARY_MAIN = 'https://openlibrary.org';
 const SEARCH = `${OPEN_LIBRARY_MAIN}/search.json?q=`;
@@ -26,19 +25,19 @@ app.get('/edition', (req, res) => {
   const {id, isbn} = req.query;
   const query = id ? `${id}.json`: `${isbn}.json`;
   const endpoint = id ? EDITIONS_BY_ID : EDITIONS_BY_ISBN;
-  fetchFromOpenLib(endpoint, query, res, extractEdition);
+  fetchFromAPI(endpoint, query, res, extractEdition);
 })
 
 app.get('/author', (req, res) => {
   const {id} = req.query;
   const query = `${id}.json`;
-  fetchFromOpenLib(AUTHORS, query, res, extractAuthor);
+  fetchFromAPI(AUTHORS, query, res, extractAuthor);
 })
 
 app.get('/work', (req, res) => {
   const {id} = req.query;
   let query = `${id}.json`;
-  fetchFromOpenLib(WORKS, query, res, extractWork);
+  fetchFromAPI(WORKS, query, res, extractWork);
 })
 
 app.get('/image', async (req, res) => {
@@ -56,13 +55,13 @@ app.get('/trending', (req, res) => {
   else {
      query = `${query}?limit=10`;
   }
-  fetchFromOpenLib(TRENDING, query, res, extractSearchResults)
+  fetchFromAPI(TRENDING, query, res, extractSearchResults)
 })
 
 app.get('/subject', (req, res) => {
   const {q} = req.query;
   let query = q ? `${q}.json` : 'fiction.json';
-  fetchFromOpenLib(SUBJECTS, query, res, extractSearchResults)
+  fetchFromAPI(SUBJECTS, query, res, extractSearchResults)
 })
 
 app.get('/search', async (req, res) => {
@@ -88,7 +87,7 @@ app.get('/search', async (req, res) => {
   } else {
     query = `${query}&limit=10`
   }
-  fetchFromOpenLib(endpoint, query, res, extractSearchResults);
+  fetchFromAPI(endpoint, query, res, extractSearchResults);
 })
 
 app.listen(port, () => {
