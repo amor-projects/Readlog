@@ -13,38 +13,37 @@ const EDITIONS_BY_ISBN = `${OPEN_LIBRARY_MAIN}/isbn/`;
 const WORKS = `${OPEN_LIBRARY_MAIN}/works/`;
 const TRENDING = `${OPEN_LIBRARY_MAIN}/trending/`;
 const SUBJECTS = `${OPEN_LIBRARY_MAIN}/subjects/`
-const port = 3000;
 
 const app = express();
 
 app.use('/openlibraryimages', express.static(path.join(import.meta.dirname, 'public')));
 
-app.get('/edition', (req, res) => {
+app.get('/api/edition', (req, res) => {
   const {id, isbn} = req.query;
   const query = id ? `${id}.json`: `${isbn}.json`;
   const endpoint = id ? EDITIONS_BY_ID : EDITIONS_BY_ISBN;
   fetchFromAPI(endpoint, query, res, extractEdition);
 })
 
-app.get('/author', (req, res) => {
+app.get('/api/author', (req, res) => {
   const {id} = req.query;
   const query = `${id}.json`;
   fetchFromAPI(AUTHORS, query, res, extractAuthor);
 })
 
-app.get('/work', (req, res) => {
+app.get('/api/work', (req, res) => {
   const {id} = req.query;
   let query = `${id}.json`;
   fetchFromAPI(WORKS, query, res, extractWork);
 })
 
-app.get('/image', async (req, res) => {
+app.get('/api/image', async (req, res) => {
   const {type, id} = req.query;
   const resp = await getImage(type,id);
   res.json(resp);
 })
 
-app.get('/trending', (req, res) => {
+app.get('/api/trending', (req, res) => {
   const { duration, limit } = req.query;
   let query = duration ? `${duration}.json` : 'weekly.json';
   if (limit) {
@@ -56,13 +55,13 @@ app.get('/trending', (req, res) => {
   fetchFromAPI(TRENDING, query, res, extractSearchResults)
 })
 
-app.get('/subject', (req, res) => {
+app.get('/api/subject', (req, res) => {
   const {q} = req.query;
   let query = q ? `${q}.json` : 'fiction.json';
   fetchFromAPI(SUBJECTS, query, res, extractSearchResults)
 })
 
-app.get('/search', async (req, res) => {
+app.get('/api/search', async (req, res) => {
   const {q, title, author, isbn , limit} = req.query;
   let type;
   let value;
@@ -85,15 +84,14 @@ app.get('/search', async (req, res) => {
   fetchFromAPI('', query, res, extractSearchResults);
 })
 
-app.get('/freebook', (req, res) => {
+app.get('/api/freebook', (req, res) => {
   const q = req.query.q;
   fetchFromAPI(GUTTENDEX,q, res, extractGutenResults );
 })
-app.get('/freeshelve', (req, res) => {
+app.get('/api/freeshelve', (req, res) => {
   const {topic, limit} = req.query;
   const query = shelfUrl(topic, limit);
   fetchFromAPI('', query, res, extractGutenResults)
 })
-app.listen(port, () => {
-  console.log(`Server is running at port ${port}`);
-})
+
+export default app;
