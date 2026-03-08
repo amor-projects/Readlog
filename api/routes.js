@@ -2,9 +2,10 @@ import express from 'express';
 import path from 'path';
 import getImage from './getImage.js';
 import { fetchFromAPI } from './fetchFromAPI.js';
-import { extractWork, extractAuthor, extractEdition, extractSearchResults } from './extractData.js';
+import { extractWork, extractAuthor, extractEdition, extractSearchResults, extractGutenResults } from './extractData.js';
 import { GUTENBERG_SHELVES, shelfUrl, createSearchURL, sanitzeInput } from './utils.js';
 
+const GUTTENDEX = 'https://gutendex.com/books/?search=';
 const OPEN_LIBRARY_MAIN = 'https://openlibrary.org';
 const AUTHORS = `${OPEN_LIBRARY_MAIN}/authors/`;
 const EDITIONS_BY_ID = `${OPEN_LIBRARY_MAIN}/books/`;
@@ -84,8 +85,14 @@ app.get('/search', async (req, res) => {
   fetchFromAPI('', query, res, extractSearchResults);
 })
 
-app.get('/freebooks', (req, res) => {
-  
+app.get('/freebook', (req, res) => {
+  const q = req.query.q;
+  fetchFromAPI(GUTTENDEX,q, res, extractGutenResults );
+})
+app.get('/freeshelve', (req, res) => {
+  const {topic, limit} = req.query;
+  const query = shelfUrl(topic, limit);
+  fetchFromAPI('', query, res, extractGutenResults)
 })
 app.listen(port, () => {
   console.log(`Server is running at port ${port}`);

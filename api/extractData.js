@@ -71,9 +71,33 @@ function extractAuthor(author) {
   })
 }
 
+function extractGutenBook (book) {
+  if (!book) {
+    return {
+      failed: true,
+      message: 'Book Not Found'
+    }
+  }
+  return {
+    id:       book.id,
+    title:    book.title,
+    authors:  book?.authors && book.authors.map(a => a.name),
+    cover:    book.formats && book.formats['image/jpeg'],         
+    epub:     book.formats && book.formats['application/epub+zip'],
+    subjects: book.subjects,  
+  }
+}
+
+function extractGutenResults (data, limit = 10) {
+  const results = data?.results?.slice(0, limit);
+  return results ? results.map(book => (extractGutenBook(book))) : {failed: true, message: `Found Nothing`};
+}
+
 export {
   extractWork,
   extractAuthor,
   extractEdition,
   extractSearchResults,
+  extractGutenBook, 
+  extractGutenResults,
 }
