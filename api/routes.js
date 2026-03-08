@@ -3,12 +3,9 @@ import path from 'path';
 import getImage from './getImage.js';
 import { fetchFromAPI } from './fetchFromAPI.js';
 import { extractWork, extractAuthor, extractEdition, extractSearchResults } from './extractData.js';
+import { GUTENBERG_SHELVES, shelfUrl, createSearchURL, sanitzeInput } from './utils.js';
 
 const OPEN_LIBRARY_MAIN = 'https://openlibrary.org';
-const SEARCH = `${OPEN_LIBRARY_MAIN}/search.json?q=`;
-const SEARCH_BY_TITLE = `${OPEN_LIBRARY_MAIN}/search.json?title=`;
-const SEARCH_BY_AUTHOR = `${OPEN_LIBRARY_MAIN}/search.json?author=`;
-const SEARCH_BY_ISBN  = `${OPEN_LIBRARY_MAIN}/search.json?isbn=`;
 const AUTHORS = `${OPEN_LIBRARY_MAIN}/authors/`;
 const EDITIONS_BY_ID = `${OPEN_LIBRARY_MAIN}/books/`;
 const EDITIONS_BY_ISBN = `${OPEN_LIBRARY_MAIN}/isbn/`;
@@ -65,31 +62,31 @@ app.get('/subject', (req, res) => {
 })
 
 app.get('/search', async (req, res) => {
-  const que = req.query
-  const {q, title, author, isbn , limit} = que;
-  let endpoint = SEARCH;
-  let query;
+  const {q, title, author, isbn , limit} = req.query;
+  let type;
+  let value;
   if (title) {
-    query = title;
-    endpoint = SEARCH_BY_TITLE;
+    type = 'title';
+    value = title;
   } else if (author) {
-    query = author;
-    endpoint = SEARCH_BY_AUTHOR;
+    type = 'author';
+    value = author;
   } else if (isbn) {
-    query = isbn;
-    endpoint = SEARCH_BY_ISBN;
+    type = 'isbn';
+    value = isbn;
   } else {
-    query = q;
-    endpoint = SEARCH;
+    type = 'q'
+    value = q;
   }
-  if (limit) {
-    query = `${query}&limit=${limit}`;
-  } else {
-    query = `${query}&limit=10`
-  }
-  fetchFromAPI(endpoint, query, res, extractSearchResults);
+  value = sanitzeInput(value);
+  const lim = limit || 10;
+  const query = createSearchURL(type, value, lim)
+  fetchFromAPI('', query, res, extractSearchResults);
 })
 
+app.get('/freebooks', (req, res) => {
+  
+})
 app.listen(port, () => {
   console.log(`Server is running at port ${port}`);
 })

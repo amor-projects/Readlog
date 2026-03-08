@@ -1,7 +1,6 @@
-import { sanitzeInput } from './utils.js';
+import { sanitzeInput, POSTFIX } from './utils.js';
 
 async function fetchFromAPI (endpoint, query, res, extractFn = null) {
-  query = sanitzeInput(query);
   try {
     const resp = await fetch(`${endpoint}${query}`);
     if (!resp.ok) {
@@ -30,7 +29,7 @@ async function getTopWorks(authorId, limit = 10) {
     `?author=${authorId}` +
     `&sort=editions` +
     `&limit=${limit}` +
-    `&fields=key,title,cover_i,first_publish_year,edition_count,ratings_average,want_to_read_count`
+    `${POSTFIX}`
   );
   const data = await resp.json();
   return extractSearchResults(data);
