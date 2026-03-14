@@ -2,7 +2,11 @@ import { sanitzeInput, POSTFIX } from './utils.js';
 
 async function fetchFromAPI (endpoint, query, res, extractFn = null) {
   try {
-    const resp = await fetch(`${endpoint}${query}`);
+    const resp = await fetch(`${endpoint}${query}`, {
+      headers: {
+        "User-Agent": "ReadLog/1.0 amorzephyr@gmail.com"
+      }
+    });
     if (!resp.ok) {
       throw new Error(`External API Failed ${endpoint}${query}`)
     }

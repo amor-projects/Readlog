@@ -17,7 +17,7 @@ function extractSearchResults(data) {
     authorsNames:    work.author_name,
     authorsIds:      work.author_key,
     cover:           work.cover_i,
-    firtPublishYear: work.first_publish_year,
+    firstPublishYear: work.first_publish_year,
     rating:          work.ratings_average?.toFixed(2),
     wantToRead:      work.want_to_read_count,
   }))
